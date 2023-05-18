@@ -9,12 +9,13 @@
 #define n 14
 
 float w[6]; // 各項係數
-float h[n + 1]; // 隱藏的內部額
+float h[n + 1]; // 隱藏解答
+float h2[n + 1]; // 隱藏的內部額
 float y[n]; // y目標
 float y2[n]; // y2目標
 float xx[n]; // 輸入
-float o[n];
-float o2[n];
+float o[n];//輸出Y1
+float o2[n];//輸出Y2
 
 void Vending_machine(float x[], float h[], float y1[], float y2[]) {
     int p = 0;
@@ -40,10 +41,11 @@ float sigmoid(float y) {
 void sigmoidneuron(float xx[], float w[], int i) {
     o[i] = sigmoid(xx[i] * w[0] + w[1] * h[i] + w[2]);
     o2[i] = sigmoid(xx[i] * w[3] + w[4] * h[i] + w[5]);
+    h2[i + 1] = h[i] + (-1 * o[i] + -3 * o2[i] + (1 - xx[i]));
 }
 
 int main() {
-    srand(time(NULL)); rand();
+    srand(time(NULL));
 
     for (int i = 0; i < 1000; i++) {
         for (int i = 0; i < n; i++)
@@ -54,10 +56,10 @@ int main() {
 
         for (int j = 0; j < n; j++) {
             w[0] += (y[j] - o[j]) * xx[j];
-            w[1] += (y[j] - o[j]) * h[j];
+            w[1] += (y[j] - o[j]) * h2[j];
             w[2] += (y[j] - o[j]) * 1.0;
             w[3] += (y2[j] - o2[j]) * xx[j];
-            w[4] += (y2[j] - o2[j]) * h[j];
+            w[4] += (y2[j] - o2[j]) * h2[j];
             w[5] += (y2[j] - o2[j]) * 1.0;
         }
     }
@@ -68,22 +70,23 @@ int main() {
     for (int i = 0; i < n; i++)
         sigmoidneuron(xx, w, i);
     std::cout << "X  :";
-    for (int i = 0; i < n; i++) std::cout  << xx[i] << "|";
+    for (int i = 0; i < n; i++) std::cout << xx[i] << "|";
     std::cout << "\n";
     for (int i = 0; i < n; i++) std::cout << "___";
     std::cout << "輸出" << "\n" << "y1 :";
     for (int i = 0; i < n; i++)std::cout << round(o[i]) << "|";
     std::cout << "\n" << "y2 :";
     for (int i = 0; i < n; i++)std::cout << round(o2[i]) << "|";
-    std::cout << "\n"; 
+    std::cout << "\n" << "H2 :";
+    for (int i = 0; i <= n; i++)std::cout << round(h2[i]) << "|";
+    std::cout << "\n";
     for (int i = 0; i < n; i++) std::cout << "___";
     std::cout << "目標" << "\n" << "y1 :";
     for (int i = 0; i < n; i++)std::cout << y[i] << "|";
     std::cout << "\n" << "y2 :";
     for (int i = 0; i < n; i++)std::cout << y2[i] << "|";
-    std::cout << "\n" <<"H  :";
+    std::cout << "\n" << "H  :";
     for (int i = 0; i <= n; i++)std::cout << h[i] << "|";
-}
 
 
 // 執行程式: Ctrl + F5 或 [偵錯] > [啟動但不偵錯] 功能表
