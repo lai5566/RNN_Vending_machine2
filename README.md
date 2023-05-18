@@ -1,1 +1,1 @@
-# ConsoleApplication18
+# RNN_Vending_machine
